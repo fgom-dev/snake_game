@@ -1,4 +1,5 @@
 import random
+from time import sleep
 
 import pygame
 
@@ -65,6 +66,13 @@ class Snake:
     def comer(self, frutinha):
         self.corpo.append(frutinha.posicao)
 
+    def colisao_parede(self):
+        cabeca = self.corpo[0]
+        x = cabeca[0]
+        y = cabeca[1]
+
+        return x < 0 or y < 0 or x > 490 or y > 490
+
 
 class Frutinha:
     cor = (255, 0, 0)
@@ -107,6 +115,9 @@ while True:
     if snake.colisao_frutinha(frutinha):
         snake.comer(frutinha)
         frutinha = Frutinha()
+    if snake.colisao_parede():
+        sleep(2)
+        snake = Snake()
 
     snake.andar()
     screen.fill(preto)
