@@ -59,6 +59,12 @@ class Snake:
         if self.direcao != 'esquerda':
             self.direcao = 'direita'
 
+    def colisao_frutinha(self, frutinha):
+        return self.corpo[0] == frutinha.posicao
+
+    def comer(self, frutinha):
+        self.corpo.append(frutinha.posicao)
+
 
 class Frutinha:
     cor = (255, 0, 0)
@@ -98,8 +104,11 @@ while True:
                 snake.direita()
                 break
 
-    snake.andar()
+    if snake.colisao_frutinha(frutinha):
+        snake.comer(frutinha)
+        frutinha = Frutinha()
 
+    snake.andar()
     screen.fill(preto)
     frutinha.blit(screen)
     snake.blit(screen)
