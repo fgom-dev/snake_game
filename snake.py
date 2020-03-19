@@ -63,15 +63,15 @@ class Snake:
     def colisao_frutinha(self, frutinha):
         return self.corpo[0] == frutinha.posicao
 
-    def comer(self, frutinha):
-        self.corpo.append(frutinha.posicao)
+    def comer(self):
+        self.corpo.append((0, 0))
 
-    def colisao_parede(self):
+    def colisao(self):
         cabeca = self.corpo[0]
         x = cabeca[0]
         y = cabeca[1]
 
-        return x < 0 or y < 0 or x > 490 or y > 490
+        return x < 0 or y < 0 or x > 490 or y > 490 or cabeca in self.corpo[1:]
 
 
 class Frutinha:
@@ -113,9 +113,9 @@ while True:
                 break
 
     if snake.colisao_frutinha(frutinha):
-        snake.comer(frutinha)
+        snake.comer()
         frutinha = Frutinha()
-    if snake.colisao_parede():
+    if snake.colisao():
         sleep(2)
         snake = Snake()
 
