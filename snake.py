@@ -3,14 +3,6 @@ from time import sleep
 
 import pygame
 
-pygame.init()
-
-resolucao = (500, 500)
-screen = pygame.display.set_mode(resolucao)
-pygame.display.set_caption(f'Snake - Pontuação: 0')
-preto = (0, 0, 0)
-clock = pygame.time.Clock()
-
 
 class Snake:
     cor = (255, 255, 255)
@@ -85,53 +77,66 @@ class Frutinha:
     cor = (255, 0, 0)
     tamanho = (10, 10)
 
-    def __init__(self):
+    def __init__(self, snake):
         self.textura = pygame.Surface(self.tamanho)
         self.textura.fill(self.cor)
+
+        self.posicao = (Frutinha.criar_posicao(snake))
+
+    @staticmethod
+    def criar_posicao(snake):
         x = random.randint(0, 49) * 10
         y = x
-        self.posicao = (x, y)
+
+        if (x, y) in snake.corpo:
+            Frutinha.criar_posicao(snake)
+        else:
+            return x, y
 
     def blit(self, screen):
         screen.blit(self.textura, self.posicao)
 
 
-frutinha = Frutinha()
-snake = Snake()
+if __name__ == '__main__':
+    pygame.init()
+    resolucao = (500, 500)
+    screen = pygame.display.set_mode(resolucao)
+    pygame.display.set_caption(f'Snake - Pontuação: 0')
+    preto = (0, 0, 0)
+    clock = pygame.time.Clock()
+    snake = Snake()
+    frutinha = Frutinha(snake)
 
-while True:
-    clock.tick(15)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
+    while True:
+        clock.tick(15)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
 
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                snake.cima()
-                break
-            elif event.key == pygame.K_DOWN:
-                snake.baixo()
-                break
-            elif event.key == pygame.K_LEFT:
-                snake.esquerda()
-                break
-            elif event.key == pygame.K_RIGHT:
-                snake.direita()
-                break
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    snake.cima()
+                    break
+                elif event.key == pygame.K_DOWN:
+                    snake.baixo()
+                    break
+                elif event.key == pygame.K_LEFT:
+                    snake.esquerda()
+                    break
+                elif event.key == pygame.K_RIGHT:
+                    snake.direita()
+                    break
 
-    if snake.colisao_frutinha(frutinha):
-        snake.comer()
-        frutinha = Frutinha()
+        if snake.colisao_frutinha(frutinha):
+            snake.comer()
+            frutinha = Frutinha(snake)
 
-    if snake.colisao():
-        sleep(2)
-        snake = Snake()
+        if snake.colisao():
+            sleep(2)
+            snake = Snake()
 
-
-    snake.andar()
-    screen.fill(preto)
-    frutinha.blit(screen)
-    snake.blit(screen)
-
-
-    pygame.display.update()
+        snake.andar()
+        screen.fill(preto)
+        frutinha.blit(screen)
+        snake.blit(screen)
+        pygame.display.update()
